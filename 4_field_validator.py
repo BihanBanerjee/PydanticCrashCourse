@@ -27,6 +27,14 @@ class Patient(BaseModel):
     def transform_name(cls, value):
         return value.upper()
     
+    @field_validator('age', mode='after') # after means after the type coercion if you give 'age': '30', then also it will work. No error thrown.
+    @classmethod
+    def validate_age(cls, value):
+        if 0 < value < 100 :
+            raise value
+        else:
+            raise ValueError('Age should be between 0 and 100')
+    
 
 patient_info = {
     'name': 'John',
@@ -38,6 +46,6 @@ patient_info = {
     'contact_details': {'home': '123 Main St', 'work': '456 Business Ave'}
 }
 
-patient1 = Patient(**patient_info)
+patient1 = Patient(**patient_info) # validation --> type coercion
 print(patient1)
 
